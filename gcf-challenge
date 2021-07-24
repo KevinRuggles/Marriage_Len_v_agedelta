@@ -1,0 +1,80 @@
+from functools import reduce
+
+def greatest_common_factor(seq): 
+    # factor returns prime factors of a number
+    # pf_condense returns dictionary of primes:counts from a list of prime factors.
+    ldpf = []
+    for n in seq:
+        #print('n',n)
+        fn=factor(n)
+        #print('fn',fn)
+        cn = condense(fn)
+        #print('cn',cn)
+        ldpf.append(cn)
+        #print('ldpf',ldpf)
+    
+    # intersection of keys from all dictionaries
+    facts = reduce( lambda a,b: set(a) & set(b) , ldpf )
+    #print(f'facts:{facts}')
+    gcf = 1
+    for i in facts:
+        lmin = ldmin(i,ldpf)
+        #print('lmin',lmin)
+        
+        gcf *= i**lmin
+    
+    #print('gcf',gcf)
+    return gcf
+
+def ldmin(i,ld):
+    #print(i,ld)
+    min=ld[0][i]
+    #print('ldmin:min0',min)
+    
+    for d in ld[1:]:
+        #print('ldmin:d[i]',d[i])
+        if d[i]<min:
+            min=d[i]
+            #print('new min',min)
+    
+    #print('ldmin return:',min)
+    return min
+    
+    
+def condense(lf):
+    d={}
+    for v in set(lf):
+        d[v]=lf.count(v)
+    return d
+            
+
+def is_prime(n):
+    if n==0: return False
+    if n<=3:
+        return True
+    srn = int(n**.5)
+    for i in range(2,srn+1):
+        if n%i==0: 
+            return False
+    return True
+
+def factor(n):
+    #print('factor n',n)
+    if is_prime(n):
+        #print('prime')
+        return[n]
+    #print('not prime')
+    lf = []
+    x=n
+    # find and list factors
+    div=2
+    while x>1:
+        if x%div == 0:
+            lf.append(div)
+            x/=div
+            #print('div,x,lf',div,x,lf)
+        else:
+            div+=1
+            #print('div +1',div)
+    #print('factor:return',lf)       
+    return lf
